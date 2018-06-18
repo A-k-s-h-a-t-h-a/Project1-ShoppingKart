@@ -1,0 +1,5 @@
+com\myproject\shoppingcart\UserDAOTestCase.class
+com\myproject\shoppingcart\ProductDAOTestCase.class
+com\myproject\shoppingcart\SupplierDAOTestCase.class
+com\myproject\shoppingcart\CartDAOTestCase.class
+com\myproject\shoppingcart\CategoryDAOTestCase.class

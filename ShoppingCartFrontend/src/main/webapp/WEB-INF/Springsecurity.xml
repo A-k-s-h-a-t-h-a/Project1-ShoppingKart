@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	   xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+					       http://www.springframework.org/schema/beans/spring-beans.xsd
+					       http://www.springframework.org/schema/security 
+					       http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<security:http auto-config="true">
+		<security:intercept-url pattern="/manage**" access="ROLE_ADMIN"/>
+		<security:intercept-url pattern="/cart/**" access="ROLE_USER"/>
+		
+		 <security:form-login 
+		      login-page="/signin" 
+		      username-parameter="j_username" password-parameter="j_password"
+		      login-processing-url="/j_spring_security_check"
+		      default-target-url="/secure"
+		      authentication-failure-url="/signin?error" 
+		  />
+	
+		  <security:logout  logout-success-url="/signin?logout"
+		      				logout-url="/j_spring_security_logout"
+		  />
+	</security:http>
+	
+	 <security:authentication-manager>
+		 <security:authentication-provider>
+			 <security:jdbc-user-service data-source-ref="dataSource"
+										 users-by-username-query="select emailID, password, enabled from User where emailID=?"
+										 authorities-by-username-query="select emailID, role from User where emailID=?"
+			  />
+		 </security:authentication-provider>
+	 </security:authentication-manager>
+ </beans>

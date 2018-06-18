@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:security="http://www.springframework.org/schema/security"
+	   xsi:schemaLocation= "http://www.springframework.org/schema/beans
+							http://www.springframework.org/schema/beans/spring-beans.xsd
+							http://www.springframework.org/schema/context
+							http://www.springframework.org/schema/context/spring-context.xsd
+							http://www.springframework.org/schema/security
+							http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<security:http auto-config="true">
+		<security:intercept-url pattern="/manage**" access="ROLE_ADMIN" /> 
+		<security:intercept-url pattern="/cart/**" access="ROLE_USER" />
+		<security:intercept-url pattern="/buy**" access="ROLE_USER" />
+<!-- 	all urls beginning with 'manage' are accessible to the admin only -->
+
+		<security:form-login    
+			login-page="/signin"
+			username-parameter="mailid" 
+			password-parameter="psw"
+			authentication-failure-url="/loginError"
+			default-target-url="/secure" />
+<!-- 		to log in, the mapping to the signin page must be given -->
+<!-- 		the username & pswd are the values of the 'name' attribute in the signin page -->
+<!-- 		if the credentials are wrong, invalid message is displayed -->
+<!-- 		if login is successful, by default it should show the page mapped at the "/" url -->
+
+		<security:access-denied-handler error-page="/accessDenied" />
+<!-- 	if the admin tries to accesss any cart or if a user tries to access a page meant for admin -->
+
+		<security:logout logout-url="/signout" />
+<!-- 	so that the user logs out only on clicking the button, not by typing the url -->
+
+	</security:http>
+	
+	
+	<security:authentication-manager>
+		<security:authentication-provider>
+<!-- 			<security:user-service> -->
+<!-- 	   			<security:user name="admin" password="admin" authorities="ROLE_ADMIN" /> -->
+<!-- 	   			<security:user name="admin1" password="admin1" authorities="ROLE_USER" /> -->
+<!-- 	   			<security:user name="admin2" password="admin2" authorities="ROLE_USER" /> -->
+<!-- 	   		</security:user-service> -->
+   			
+		<security:jdbc-user-service
+			data-source-ref="dataSource"
+			users-by-username-query="select emailID, pwd, enabled from User where emailID=?"
+			authorities-by-username-query="select emailID, role from User where emailID=?" />
+
+		</security:authentication-provider>
+	</security:authentication-manager>
+	
+</beans>
